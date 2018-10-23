@@ -2,13 +2,54 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-var ip = require('ip');
+const ip = require('ip');
+const bodyParser = require('body-parser');
+const MongoClient = require('Mongodb').MongoClient;
 
-app.get('/', function(req, res, next){
+
+
+//中间件 bodyParser.urlencoded 模块用于解析req.body的数据
+//解析成功后覆盖原来的req.body，如果解析失败则为 {} 。
+//该模块有一个属性extended，
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
+
+app.use(bodyParser.json())
+app.use(express.static('public'));
+
+var dbase;
+
+const dbConfig = {
+  url : 'mongodb://superAdmin:abc123456@ds115798.mlab.com:15798/star_login',
+  autoIndex: false,
+  useNewUrlParser: true
+};
+MongoClient.connect(dbConfig.url, (err, db) => {
+  dbase = db.db("star_login");
+  if (err) return console.log(err)
+  console.log("mongo connection success")
+})
+
+
+app.get("/", (req, res) => {
+	// //用collection 跟 find方法查找数据可用的方法，当然 这没有意义
+	// var cursor = db.collection('login').find()
+	// //console.log(cursor)
+	dbase.collection('userCollection').find().toArray(function(err, results) {
+	  if (err) 
+	  	return console.log(err)
+	  	console.log(results)
+	})
 	res.sendFile(__dirname + '/index.html');
 });
 
-app.use(express.static('public'))
+app.get("/join", (req, res) => {
+	res.sendFile(__dirname + '/public/views/join.html');
+});
+
+
+
 
 let clients = 0;
 io.on('connection', function(socket){
