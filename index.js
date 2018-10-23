@@ -6,7 +6,7 @@ const ip = require('ip');
 const bodyParser = require('body-parser');
 const MongoClient = require('Mongodb').MongoClient;
 
-
+var token = new Date().getTime();
 
 //中间件 bodyParser.urlencoded 模块用于解析req.body的数据
 //解析成功后覆盖原来的req.body，如果解析失败则为 {} 。
@@ -18,16 +18,20 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(express.static('public'));
 
-var dbase;
+var db = null;
 
+var url = 'mongodb://superAdmin:abc123456@ds115798.mlab.com:15798/star_login';
 const dbConfig = {
-  url : 'mongodb://superAdmin:abc123456@ds115798.mlab.com:15798/star_login',
+  
   autoIndex: false,
   useNewUrlParser: true
 };
-MongoClient.connect(dbConfig.url, (err, db) => {
-  dbase = db.db("star_login");
-  if (err) return console.log(err)
+MongoClient.connect(url, (err, client) => {
+  db = client.db("star_login");
+  if (err) {
+  	console.log(err) 
+  	return ;
+  }
   console.log("mongo connection success")
 })
 
@@ -36,9 +40,9 @@ app.get("/", (req, res) => {
 	// //用collection 跟 find方法查找数据可用的方法，当然 这没有意义
 	// var cursor = db.collection('login').find()
 	// //console.log(cursor)
-	dbase.collection('userCollection').find().toArray(function(err, results) {
-	  if (err) 
-	  	return console.log(err)
+	db.collection('userCollection').find().toArray(function(err, results) {
+	  if (err) console.log(err)
+	  	return ;
 	  	console.log(results)
 	})
 	res.sendFile(__dirname + '/index.html');
@@ -48,6 +52,18 @@ app.get("/join", (req, res) => {
 	res.sendFile(__dirname + '/public/views/join.html');
 });
 
+
+//接口
+app.post("/api/addUser", (req, res) => {
+	db.collection('userCollection').insertOne(req.body, (err, result) => {
+		if (err) {
+			console.log("========",req.body, err)
+			return;
+		}
+		console.log('saved to database')
+		res.redirect('/');
+	});
+});
 
 
 
