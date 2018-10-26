@@ -7,6 +7,7 @@ const ip = require('ip');
 const bodyParser = require('body-parser');
 const MongoClient = require('Mongodb').MongoClient;
 const router = require(__dirname + '/server/router/index');
+const apiRouter = require(__dirname + '/server/service/apiService');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
@@ -20,9 +21,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(express.static('public'));
-
-app.use('/', router);
-
 const identityKey = 'skey';
 
 app.use(session({
@@ -35,11 +33,19 @@ app.use(session({
     }
 }));
 
-//捕捉错误
-app.use(function(req, res, next){
-	console.log(err);
-	next();
-});
+
+//登录拦截器，必须放在静态资源声明之后、路由导航之前
+// app.use(function (req, res, next) {
+//     var url = req.originalUrl;
+//     console.log(req.session)
+//     if (url != "/join" && !req.session.loginUser) {
+//         return res.redirect("/join");
+//     }
+//     next();
+// });
+
+app.use('/', router);
+app.use('/api', apiRouter);
 
 
 let clients = 0;
@@ -50,23 +56,22 @@ io.on('connection', function(socket){
 	let data = {};
 	data.description = clients + ' 人在线!';
 	data.ip = ip.address();
-	io.sockets.emit('broadcast', data);
+	io.sockets.emit('userCount', data);
 	socket.on('disconnect', function(){
 		clients --;
-		io.sockets.emit("broadcast", { description: clients + ' 人离线!'})
+		io.sockets.emit("userCount", { description: clients + ' 人离线!'})
 	})
-	// setTimeout(function() {
- //      socket.emit('testerEvent', { description: 'A custom event named testerEvent!'});
- //   }, 4000);
 
  	//为了简单起见，将消息发送给所有用户，包括发送者可以这么写 事件自定义
 	socket.on('chat message', function(msg){
 		let data = {};
 		data.msg = msg;
-		data.ip = ip.address();
 		io.emit('chat message', data)
-		console.log("message:" + data.msg)
-	})
+
+		// let readId = SELECT * FROM User WHERE id = id;
+		// console.log(readId)
+		//console.log("message:" + data.msg)
+	});
 })
 
 http.listen(3000, function(){
