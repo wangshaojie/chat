@@ -36,36 +36,12 @@
 	            <div class="form-group has-feedback">
 	              <p class="text-primary sumOnlineNum"></p>
 	              <strong>在线用户：</strong>
+	              <p class="addMessage"></p>
 	            </div>
 	          </div>
 	        </div>
 
 	        <div class="row sideBar" id="userList">
-	        	<%for(var i = 0; i < result.length; i++){
-	        		var names = result[i].userName;
-	        	%>
-					<div class="row sideBar-body">
-			            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-			              <div class="avatar-icon">
-			                <img src="http://placekitten.com/100/100">
-			              </div>
-			            </div>
-			            <div class="col-sm-9 col-xs-9 sideBar-main">
-			              <div class="row">
-			                <div class="col-sm-8 col-xs-8 sideBar-name">
-			                  <span class="name-meta"><%=names%>
-			                </span>
-			                </div>
-			                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-			                  <span class="time-meta pull-right">18:18
-			                </span>
-			                </div>
-			              </div>
-			            </div>
-			          </div>
-	        	<%}%>
-	          
-
 	          
 	        </div>
 	      </div>
@@ -221,7 +197,7 @@
 	          </div>
 	        </div>
 	        <div class="col-sm-8 col-xs-7 heading-name">
-	          <a class="heading-name-meta">John Doe
+	          <a class="heading-name-meta"><%=result.name%>
 	          </a>
 	          <span class="heading-online">Online</span>
 	        </div>

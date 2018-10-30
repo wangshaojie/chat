@@ -2,20 +2,31 @@ const express = require('express');
 const router = express.Router();
 const mysql  = require('mysql');
 const DBconfig = require('../db/DBConfig');
-const userSQL = require('../db/usersql');
+const utilSQL = require('../db/usersql');
 const snowflake = require('node-snowflake').Snowflake;
 const pool = mysql.createConnection( DBconfig.mysql );
 const utilError = require('../util/util');
 
 
+let userDefaultImgArr = 
+['http://thyrsi.com/t6/400/1540794654x-1404817844.jpg',
+'http://thyrsi.com/t6/400/1540794679x-1404817844.jpg',
+'http://thyrsi.com/t6/400/1540794689x-1404817844.jpg',
+'http://thyrsi.com/t6/400/1540794697x-1404817844.jpg',
+'http://thyrsi.com/t6/400/1540794716x-1404817844.jpg',
+'http://thyrsi.com/t6/400/1540794726x-1404817844.jpg',
+'http://thyrsi.com/t6/400/1540794735x-1404817844.jpg'];
 
 //增
-var ids = snowflake.nextId();
+
+var index = Math.floor((Math.random()*userDefaultImgArr.length));
 router.post("/addUser", (req, res) => {
+	var ids = snowflake.nextId();
 	var param = req.query || req.params;
 	let username = req.body.userName;
-	var insert = "INSERT INTO `User` (userName, id) VALUES ('" + username + "', '"+ ids +"')";
-	pool.query(insert, function (err, result) {
+	var isOnline = 1; //1在线 0离线
+	//var insert = "INSERT INTO `User` (userName, id, image) VALUES ('" + username + "', '"+ ids +"', '"+ userDefaultImgArr[index] +"')";
+	pool.query(utilSQL.insert('User', 'userName, id, image, isOnline', " '"+ username +"',  '"+ ids +"',  '"+ userDefaultImgArr[index] +"', '"+ isOnline +"' "), function (err, result) {
         if (err) {
         	return res.status(500).send(err);
     	};
@@ -61,9 +72,8 @@ router.post("/addUser", (req, res) => {
 //查
 router.get('/getUserInfo/:userId', function(req, res){
 	var id = req.params.userId;
-	var getUser = "SELECT * FROM `User` WHERE id = "+ id;
 	//console.log(getUser);
-	pool.query(getUser, function (err, result) {
+	pool.query(utilSQL.getUserById('User', 'id', " '"+ id +"' "), function (err, result) {
 		utilError.jsonWrite(res, result);
 	})
 });
