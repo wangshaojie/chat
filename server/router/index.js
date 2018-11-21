@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const session = require('express-session');
 
 
-
+//假的登陆验证
 router.use("*", function (req, res, next) {
     let userInfo = {};
     if (req.cookies["chat-id"]) {
@@ -33,7 +33,7 @@ router.param("userId",function(req,res,next,id){
 // 使用DBConfig.js的配置信息创建一个MySQL连接池
 var pool = mysql.createConnection( DBconfig.mysql );
 
-router.get("/:userId", (req, res) => {
+router.get("/:userId", (req, res, next) => {
 	pool.query(utilSQL.read('User'), function(err, result){
 		var userInfo = res.locals.userInfo;
 		var result = result.reverse();

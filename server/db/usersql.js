@@ -15,7 +15,8 @@ var userSql = {
     },
 
     upDate : function(tableName, key , value, id){
-    	return "UPDATE "+ tableName +" SET "+ key +" = "+ value +" WHERE id = "+ id +""
+    	//console.log("UPDATE "+ tableName +" SET "+ key +" = "+ value +" WHERE id = "+ id)
+    	return "UPDATE "+ tableName +" SET "+ key +" = "+ value +" WHERE id = "+ id
     }
 
 };

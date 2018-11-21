@@ -11,6 +11,10 @@
 		var userInfoJson = JSON.stringify(userInfo);
 	%>
 
+	<script type="text/javascript">
+    	window.userInfo = <%-userInfoJson%>
+    </script>
+
 </head>
 <body>
 	<div class="container app">
@@ -67,125 +71,7 @@
 	          </div>
 	        </div>
 
-	        <div class="row compose-sideBar">
-	          <div class="row sideBar-body">
-	            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-	              <div class="avatar-icon">
-	                <img src="https://bootdey.com/img/Content/avatar/avatar1.png">
-	              </div>
-	            </div>
-	            <div class="col-sm-9 col-xs-9 sideBar-main">
-	              <div class="row">
-	                <div class="col-sm-8 col-xs-8 sideBar-name">
-	                  <span class="name-meta">John Doe
-	                </span>
-	                </div>
-	                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-	                  <span class="time-meta pull-right">18:18
-	                </span>
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-
-	          <div class="row sideBar-body">
-	            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-	              <div class="avatar-icon">
-	                <img src="http://placekitten.com/300/200">
-	              </div>
-	            </div>
-	            <div class="col-sm-9 col-xs-9 sideBar-main">
-	              <div class="row">
-	                <div class="col-sm-8 col-xs-8 sideBar-name">
-	                  <span class="name-meta">John Doe
-	                </span>
-	                </div>
-	                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-	                  <span class="time-meta pull-right">18:18
-	                </span>
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	          <div class="row sideBar-body">
-	            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-	              <div class="avatar-icon">
-	                <img src="http://placekitten.com/300/200">
-	              </div>
-	            </div>
-	            <div class="col-sm-9 col-xs-9 sideBar-main">
-	              <div class="row">
-	                <div class="col-sm-8 col-xs-8 sideBar-name">
-	                  <span class="name-meta">John Doe
-	                </span>
-	                </div>
-	                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-	                  <span class="time-meta pull-right">18:18
-	                </span>
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	          <div class="row sideBar-body">
-	            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-	              <div class="avatar-icon">
-	                <img src="http://placekitten.com/300/200">
-	              </div>
-	            </div>
-	            <div class="col-sm-9 col-xs-9 sideBar-main">
-	              <div class="row">
-	                <div class="col-sm-8 col-xs-8 sideBar-name">
-	                  <span class="name-meta">John Doe
-	                </span>
-	                </div>
-	                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-	                  <span class="time-meta pull-right">18:18
-	                </span>
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	          <div class="row sideBar-body">
-	            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-	              <div class="avatar-icon">
-	                <img src="https://bootdey.com/img/Content/avatar/avatar5.png">
-	              </div>
-	            </div>
-	            <div class="col-sm-9 col-xs-9 sideBar-main">
-	              <div class="row">
-	                <div class="col-sm-8 col-xs-8 sideBar-name">
-	                  <span class="name-meta">John Doe
-	                </span>
-	                </div>
-	                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-	                  <span class="time-meta pull-right">18:18
-	                </span>
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	          <div class="row sideBar-body">
-	            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-	              <div class="avatar-icon">
-	                <img src="https://bootdey.com/img/Content/avatar/avatar6.png">
-	              </div>
-	            </div>
-	            <div class="col-sm-9 col-xs-9 sideBar-main">
-	              <div class="row">
-	                <div class="col-sm-8 col-xs-8 sideBar-name">
-	                  <span class="name-meta">John Doe
-	                </span>
-	                </div>
-	                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-	                  <span class="time-meta pull-right">18:18
-	                </span>
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	          
-	          
-	        </div>
+	     
 	      </div>
 	    </div>
 
@@ -214,15 +100,15 @@
 	        <div class="col-sm-1 col-xs-1 reply-emojis">
 	          <i class="fa fa-smile-o fa-2x"></i>
 	        </div>
-	        <div class="col-sm-9 col-xs-9 reply-main">
+	        <div class="col-sm-11 col-xs-11 reply-main  reply-send">
 	          <textarea class="form-control" rows="1" id="m" data-id="<%=userInfo.id%>" data-name="<%=userInfo.name%>"></textarea>
 	        </div>
-	        <div class="col-sm-1 col-xs-1 reply-recording" style="display: none;">
+	        <!-- <div class="col-sm-1 col-xs-1 reply-recording" style="display: none;">
 	          <i class="fa fa-microphone fa-2x" aria-hidden="true"></i>
 	        </div>
 	        <div class="col-sm-1 col-xs-1 reply-send">
 	          <i class="fa fa-send fa-2x" aria-hidden="true"></i>
-	        </div>
+	        </div> -->
 	      </div>
 	    </div>
 	  </div>
@@ -233,8 +119,6 @@
     <script src="https://cdn.bootcss.com/socket.io/2.1.1/socket.io.js"></script>
     <script type="text/javascript" src="js/getLocalIP.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
-    <script type="text/javascript">
-    	window.userInfo = <%-userInfoJson%>
-    </script>
+    
 </body>
 </html>

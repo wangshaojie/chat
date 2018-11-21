@@ -17,15 +17,24 @@ let userDefaultImgArr =
 'http://thyrsi.com/t6/400/1540794726x-1404817844.jpg',
 'http://thyrsi.com/t6/400/1540794735x-1404817844.jpg'];
 
-//增
 
+const getUserList = new Promise(function(resolve, reject){
+	pool.query(utilSQL.read('User'), function(err, result){
+		if(err){
+			reject(false)
+		}
+		resolve(result);
+	})
+});
+
+//增加用户
 var index = Math.floor((Math.random()*userDefaultImgArr.length));
 router.post("/addUser", (req, res) => {
 	var ids = snowflake.nextId();
 	var param = req.query || req.params;
 	let username = req.body.userName;
 	var isOnline = 1; //1在线 0离线
-	//var insert = "INSERT INTO `User` (userName, id, image) VALUES ('" + username + "', '"+ ids +"', '"+ userDefaultImgArr[index] +"')";
+	
 	pool.query(utilSQL.insert('User', 'userName, id, image, isOnline', " '"+ username +"',  '"+ ids +"',  '"+ userDefaultImgArr[index] +"', '"+ isOnline +"' "), function (err, result) {
         if (err) {
         	return res.status(500).send(err);
@@ -72,10 +81,11 @@ router.post("/addUser", (req, res) => {
 //查
 router.get('/getUserInfo/:userId', function(req, res){
 	var id = req.params.userId;
-	//console.log(getUser);
 	pool.query(utilSQL.getUserById('User', 'id', " '"+ id +"' "), function (err, result) {
 		utilError.jsonWrite(res, result);
 	})
 });
+
+
 
 module.exports = router;

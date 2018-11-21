@@ -1,19 +1,22 @@
 var addUser = document.querySelector('#addUser');
 var nameVal = document.querySelector('#nameVal');
 
-var connected = false;
-var socket = io();
-socket.on('nameRepeat', function(){
-  alert("用户名重复")
-})
+//var connected = false;
+// var socket = io();
+// socket.on('nameRepeat', function(){
+//   alert("用户名重复")
+// })
 
 addUser.addEventListener('click', function () {
+  window.location.href = "/" + 123;
+  return false;
     axios.post('api/addUser', {
       'userName': nameVal.value
     })
     .then(function (response) {
+      console.log(response)
       if(response.data.status == 0){
-        socket.emit('add user', nameVal.value)
+        //socket.emit('add user', nameVal.value, response.data.info.id);
         window.location.href = "/" + response.data.info.id
       }
     })
@@ -21,30 +24,6 @@ addUser.addEventListener('click', function () {
       console.log(error);
     });
 });
-
-// Whenever the server emits 'login', log the login message
-// socket.on('login', (data) => {
-//   console.log(data, "--")
-//   connected = true;
-//   // Display the welcome message
-//   var message = "Welcome to Socket.IO Chat – ";
-//   log(message, {
-//     prepend: true
-//   });
-//   addParticipantsMessage(data);
-// });
-
-
-// socket.on('user joined', (data) => {
-//   console.log(",",data)
-//   log(data.username + ' joined');
-//   addParticipantsMessage(data);
-// });
-
-
-socket.on('user joined', function(data){
-  console.log(",",data)
-})
 
 
 const addParticipantsMessage = (data) => {
@@ -57,7 +36,7 @@ const addParticipantsMessage = (data) => {
   log(message);
 }
 
-// Log a message
+
 const log = (message, options) => {
   var $el = $('<li>').addClass('log').text(message);
   $('body').append($el);

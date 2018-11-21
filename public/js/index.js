@@ -16,31 +16,34 @@ function append(parent, text) {
 
 const $window = $(window);  
 var $usernameInput = $('#m');
+var conversation = document.getElementById('conversation');
 var $currentInput = $usernameInput.focus();
 
 
 
-var socket = io();
+var socket = io("localhost:3000");
+
+socket.on('connect', function() {
+  console.log('连接成功');
+  socket.emit('join chat', window.userInfo);
+});
+
 var serverGetIp = null;
 var localGetIP = null;
 getLocalIP().then((ipAddr) => {
 	localGetIP = ipAddr;
 });
 
-//全局广播接收
-socket.on('userCount', function(msg){
+
+//在线人数
+socket.on('onlineNum', function(msg){
 	document.querySelector(".sumOnlineNum").innerHTML = msg.description;
-	serverGetIp = msg.ip;
 });
 
 //全局广播接收谁离开了
-socket.on('system', function(msg){
+socket.on('leave', function(msg){
   console.log(msg.description + "离开了")
 });
-
-socket.on('allChatInfo', function(data){
-
-})
 
 var submitBtn = document.querySelector(".reply-send");
 submitBtn.addEventListener("click", sendMessage);
@@ -53,9 +56,15 @@ var sendMessage = function (event){
 	}
   let id = m.getAttribute("data-id");
   let name = m.getAttribute("data-name");
-	socket.emit('chat message', m.value, window.userInfo.name, id);
+  window.sendMsg(m.value)
+	socket.emit('chat message', m.value);
+  console.log(m.value)
 	m.value = '';
 	return false;
+};
+
+window.sendMsg = function(msg){
+  socket.send(msg);
 }
 
 
@@ -66,7 +75,7 @@ const renderChatList = function(data){
           <div class="col-sm-12 message-main-receiver">
             <div class="receiver">
               <div class="message-text">
-                ${data.message}
+                ${data.content}
               </div>
               <span class="message-time pull-right">
                 ${data.userName}
@@ -81,7 +90,7 @@ const renderChatList = function(data){
           <div class="col-sm-12 message-main-sender">
             <div class="sender">
               <div class="message-text">
-                ${data.message}
+                ${data.content}
               </div>
               <span class="message-time pull-right">
                 ${data.userName}
@@ -99,20 +108,25 @@ const renderChatList = function(data){
 
 //发送消息
 socket.on('chat message', function(data){
-  var ul = document.querySelector("#conversation");
+  console.log(data)
   var dom = renderChatList(data);
-  $("#conversation").append(dom)
+  $("#conversation").append(dom);
+  conversation.scrollTop = conversation.scrollHeight;
 });
 
+
 //查询聊天记录
-socket.on('allChatInfo', function(result){
-  var ul = document.querySelector("#conversation");
-  for (let i = 0; i < result.length; i++) {
-      let data = result[i];
-      var dom = renderChatList(data);
-       $("#conversation").append(dom)
-    }
-});
+// socket.on('allChatInfo', function(result){
+//   for (let i = 0; i < result.length; i++) {
+//       let data = result[i];
+//       var dom = renderChatList(data);
+//       $("#conversation").append(dom);
+//       conversation.scrollTop = conversation.scrollHeight;
+//     }
+// });
+
+//把当前用户信息推到服务里
+socket.emit('add user', window.userInfo.name, window.userInfo.id);
 
 
 //左侧列表渲染
@@ -129,7 +143,7 @@ socket.on('onlineCliens', function(data){
       <div class="col-sm-9 col-xs-9 sideBar-main">
         <div class="row">
           <div class="col-sm-8 col-xs-8 sideBar-name">
-            <span class="name-meta">${data[i].userName}
+            <span class="name-meta">${data[i].name}
           </span>
           </div>
           <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -164,6 +178,5 @@ var back = function(ele, event) {
     event.preventDefault();
   }
 };
-
 
 
